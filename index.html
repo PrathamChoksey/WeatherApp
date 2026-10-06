@@ -1,24 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Weather Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
     <script src="index.js" defer></script>
 </head>
-<body>
-    <form class="WeatherForm">
-        <input type="Text" class = "cityinput" placeholder="Enter city">
-        <button type="submit">Get Weather</button>
-        <div class="card" style="display:none">
-            <h1 class="citydisplay">Miami</h1>
-            <p class="tempdisplay">90°</p>
-            <p class="humiditydisplay">Humidity: 75%</p>
-            <p class="descpdisplay">Clear Skies </p>
-            <p class="WeatherEmoji">🌞</p>
-            <p class="errorDisplay">Pls enter a city</p>
+<body class="default-bg">
+    <!-- WEATHER ANIMATIONS CONTAINER -->
+    <div id="weather-background"></div>
+    
+    <div class="app-container">
+        <!-- HEADER & CONTROLS -->
+        <header class="app-header">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19C19.9853 19 22 16.9853 22 14.5C22 12.1325 20.177 10.2017 17.8576 10.0253C17.4124 6.61111 14.4925 4 11 4C7.13401 4 4 7.13401 4 11C4 11.2335 4.0114 11.4643 4.03358 11.6917C2.2878 12.3551 1 14.027 1 16C1 18.2091 2.79086 20 5 20H17.5Z"></path></svg>
+                <h1>Weather<span>Dash</span></h1>
+            </div>
+            
+            <div class="controls-right">
+                <div class="unit-toggle">
+                    <button id="btn-c" class="unit-btn active">°C</button>
+                    <button id="btn-f" class="unit-btn">°F</button>
+                </div>
+                <button id="theme-toggle" class="icon-btn" aria-label="Toggle Dark Mode" title="Toggle Dark Mode">
+                    🌙
+                </button>
+            </div>
+        </header>
+
+        <!-- SEARCH SECTION -->
+        <section class="search-section">
+            <form class="WeatherForm" id="search-form">
+                <div class="search-wrapper">
+                    <input type="text" id="cityinput" class="cityinput" placeholder="Search for a city..." autocomplete="off">
+                    <button type="submit" class="search-btn" aria-label="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </button>
+                    <button type="button" id="location-btn" class="icon-btn location-btn" aria-label="Use Current Location" title="Use Current Location">
+                        📍
+                    </button>
+                </div>
+            </form>
+            
+            <div class="search-history" id="search-history">
+                <!-- Search history buttons injected here -->
+            </div>
+        </section>
+
+        <!-- STATUS MESSAGES -->
+        <div class="loading-state" id="loading-state" style="display: none;">
+            <div class="spinner"></div>
+            <p>Fetching weather data...</p>
         </div>
-    </form>
+
+        <div class="errorDisplay" id="error-display" style="display: none;">
+            <p class="error-msg" id="error-msg"></p>
+        </div>
+
+        <!-- MAIN WEATHER CONTENT -->
+        <main class="dashboard" id="dashboard" style="display: none;">
+            
+            <!-- TOP ROW: Current Weather & Stats -->
+            <div class="top-row">
+                
+                <!-- CURRENT WEATHER CARD -->
+                <div class="card current-weather">
+                    <div class="weather-header">
+                        <div>
+                            <h2 class="citydisplay" id="city-name">--</h2>
+                            <p class="descpdisplay" id="weather-desc">--</p>
+                        </div>
+                        <div class="WeatherEmoji" id="weather-icon"></div>
+                    </div>
+                    
+                    <div class="temperature-section">
+                        <h1 class="tempdisplay" id="current-temp">--</h1>
+                        <p class="feels-like">Feels like: <span id="feels-like-val">--</span></p>
+                    </div>
+
+                    <div class="weather-insights" id="weather-insights">
+                        <!-- Insight text -->
+                    </div>
+                </div>
+
+                <!-- WEATHER DETAILS GRID -->
+                <div class="weather-details">
+                    <div class="detail-card">
+                        <span class="detail-icon">💧</span>
+                        <p class="detail-label">Humidity</p>
+                        <p class="detail-value" id="humidity-val">--</p>
+                    </div>
+                    <div class="detail-card">
+                        <span class="detail-icon">💨</span>
+                        <p class="detail-label">Wind</p>
+                        <p class="detail-value" id="wind-val">--</p>
+                    </div>
+                    <div class="detail-card">
+                        <span class="detail-icon">⏱️</span>
+                        <p class="detail-label">Pressure</p>
+                        <p class="detail-value" id="pressure-val">--</p>
+                    </div>
+                    <div class="detail-card">
+                        <span class="detail-icon">👁️</span>
+                        <p class="detail-label">Visibility</p>
+                        <p class="detail-value" id="visibility-val">--</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HOURLY FORECAST (Next 24 Hours) -->
+            <section class="forecast-section">
+                <h3>Hourly Forecast</h3>
+                <div class="hourly-container" id="hourly-forecast">
+                    <!-- Hourly cards injected here -->
+                </div>
+            </section>
+
+            <!-- 5-DAY FORECAST -->
+            <section class="forecast-section">
+                <h3>5-Day Forecast</h3>
+                <div class="daily-container" id="daily-forecast">
+                    <!-- Daily cards injected here -->
+                </div>
+            </section>
+
+            <!-- TEMPERATURE CHART -->
+            <section class="chart-section">
+                <h3>Temperature Trend</h3>
+                <div class="chart-container">
+                    <canvas id="tempChart"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
 </body>
 </html>
