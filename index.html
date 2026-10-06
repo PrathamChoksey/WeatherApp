@@ -83,7 +83,26 @@
                     
                     <div class="temperature-section">
                         <h1 class="tempdisplay" id="current-temp">--</h1>
-                        <p class="feels-like">Feels like: <span id="feels-like-val">--</span></p>
+                        <p class="feels-like">Feels like <span id="feels-like-val">--</span></p>
+                    </div>
+
+                    <!-- SUNRISE & SUNSET (Compact Row) -->
+                    <div class="sun-times-row" id="sun-times-row">
+                        <div class="sun-item">
+                            <span class="sun-icon">🌅</span>
+                            <div class="sun-text">
+                                <span class="sun-label">Sunrise</span>
+                                <span class="sun-val" id="sunrise-val">--</span>
+                            </div>
+                        </div>
+                        <div class="sun-divider"></div>
+                        <div class="sun-item">
+                            <span class="sun-icon">🌇</span>
+                            <div class="sun-text">
+                                <span class="sun-label">Sunset</span>
+                                <span class="sun-val" id="sunset-val">--</span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="weather-insights" id="weather-insights">
@@ -116,11 +135,28 @@
                 </div>
             </div>
 
-            <!-- HOURLY FORECAST (Next 24 Hours) -->
-            <section class="forecast-section">
-                <h3>Hourly Forecast</h3>
-                <div class="hourly-container" id="hourly-forecast">
-                    <!-- Hourly cards injected here -->
+            <!-- HOURLY FORECAST TIMELINE -->
+            <section class="forecast-section timeline-section">
+                <div class="timeline-header">
+                    <h3>Hourly Forecast</h3>
+                    <div class="timeline-controls">
+                        <button id="prev-hour" class="icon-btn small-btn" aria-label="Previous Hour">◀</button>
+                        <button id="next-hour" class="icon-btn small-btn" aria-label="Next Hour">▶</button>
+                    </div>
+                </div>
+                
+                <div class="hourly-carousel-wrapper" id="hourly-carousel-wrapper">
+                    <div class="hourly-container" id="hourly-forecast">
+                        <!-- Hourly cards injected here -->
+                    </div>
+                </div>
+                
+                <!-- Timeline Indicator -->
+                <div class="timeline-indicator-container">
+                    <div class="timeline-line"></div>
+                    <div class="timeline-dots" id="timeline-dots">
+                        <!-- Dots injected here -->
+                    </div>
                 </div>
             </section>
 
